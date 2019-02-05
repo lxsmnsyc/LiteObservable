@@ -9,7 +9,7 @@ LiteObservable is implemented in more-or-less 60 lines, has a single class with 
 ## Usage
 Creating an Observable
 ```js
-  let observable = new Observable((next, error, complete, closed) => {
+  let observable = new LiteObservable((next, error, complete, closed) => {
     // next: emits a value.
     // error: emits an error.
     // complete: completes the observable.
