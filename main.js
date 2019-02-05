@@ -21,9 +21,6 @@
  *  SOFTWARE.
  * 
  */
-    
-
-function emptyCleanup(){}
 
 /**
  * 
@@ -59,7 +56,7 @@ export default class LiteObservable{
          * 
          */
         let closedState = false;
-        let cleanup = emptyCleanup;
+        let cleanup = _=>{};
 
         let subscriber = this._subscriber;
 
