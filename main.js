@@ -25,11 +25,25 @@
 
 function emptyCleanup(){}
 
+/**
+ * 
+ */
 export class LiteObservable{
     constructor(subscriber){
         this._subscriber = subscriber;
     }   
     
+
+    /**
+     * 
+     * Subscribes to an Observable
+     * 
+     * @param {Function} next - Receives the emissions
+     * @param {Function} error - Receives the error emission
+     * @param {Function} complete - Receives the completion emission 
+     * 
+     * @return {Function} - Unsubscribes and cleanups the subscription
+     */
     subscribe(next, error, complete){
         /**
          * 
