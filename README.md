@@ -23,8 +23,13 @@ Creating an Observable
 Subscribing
 ```js
   let cleanup = observable.subscribe(
-    x => console.log(x),
-    e => console.error(e),
+    next => console.log(next),
+    error => console.error(error),
     () => console.log("completed")
   );
+```
+
+## Installing
+```
+npm i lite-observable
 ```
