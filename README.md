@@ -1,5 +1,5 @@
 # LiteObservable
-Cold Observables for JS in a lightweight fashion
+Cold Observables for JS in a lightweight(<1kb) fashion.
 
 ## Why?
 Unlike the proposed Observable interface as written here:
