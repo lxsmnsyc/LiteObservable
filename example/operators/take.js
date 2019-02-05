@@ -11,6 +11,10 @@ LiteObservable.prototype.take = function(amount){
                 } else {
                     if(amount-- > 0){
                         next(x);
+                        if(amount == 0){
+                            complete();
+                            cleanup();
+                        }
                     }
                 }
             },
