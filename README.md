@@ -30,8 +30,16 @@ Subscribing
 ```
 
 ## Installing
+As a node module
 ```
 npm i lite-observable
+```
+Or in browser:
+```html
+<!-- CDN -->
+<script src="https://cdn.jsdelivr.net/npm/lite-observable@1.0.2/dist/observable.min.js"></script>
+<!-- Node -->
+<script src"node_modules/lite-observable/dist/observable.min.js"></script>
 ```
 
 ## Example
