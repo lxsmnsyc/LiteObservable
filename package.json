@@ -1,6 +1,6 @@
 {
   "name": "lite-observable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lite Cold Observables for JS",
   "main": "main.js",
   "scripts": {
