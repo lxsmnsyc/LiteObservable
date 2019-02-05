@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * 
  *  Lite (Cold) Observables
@@ -27,7 +25,7 @@
 /**
  * 
  */
-class LiteObservable{
+export default class LiteObservable{
     constructor(subscriber){
         this._subscriber = subscriber;
     }   
@@ -136,5 +134,3 @@ class LiteObservable{
         }
     }
 }
-
-module.exports = LiteObservable;
