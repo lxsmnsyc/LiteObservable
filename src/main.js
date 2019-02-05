@@ -67,6 +67,7 @@ export default class LiteObservable{
              * 
              */
             try{
+                let emptyCleanup = cleanup;
                 /**
                  * 
                  *  Get the cleanup function returned by the subscriber.
