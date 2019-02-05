@@ -28,7 +28,7 @@ function emptyCleanup(){}
 /**
  * 
  */
-export class LiteObservable{
+export default class LiteObservable{
     constructor(subscriber){
         this._subscriber = subscriber;
     }   
