@@ -1,6 +1,7 @@
-var Single = (function () {
+var Observable = (function () {
   'use strict';
 
+  /* eslint-disable no-restricted-syntax */
   /**
    *
    *  Lite (Cold) Observables
@@ -24,11 +25,11 @@ var Single = (function () {
    *  SOFTWARE.
    *
    */
-  const isFunction = typeof x === 'function';
+  const isFunction = x => typeof x === 'function';
   /**
    *
    */
-  class LiteObservable {
+  class Observable {
     /**
      * Creates an Observable with a subscriber function.
      *
@@ -39,7 +40,7 @@ var Single = (function () {
      * The purpose of this is to not repeatedly create
      * the subscription object.
      * @param {function(x: Observer)} subscriber
-     * @returns {LiteObservable}
+     * @returns {Observable}
      */
     constructor(subscriber) {
       this.sub = subscriber;
@@ -49,13 +50,13 @@ var Single = (function () {
      * Provides an API (via a cold Observable) that bridges
      * the reactive world with the callback-style world.
      * @param {function(x: Observer)} onSubscribe
-     * @returns {LiteObservable}
+     * @returns {Observable}
      */
     static create(onSubscribe) {
-      return new LiteObservable((observer) => {
+      return new Observable((observer) => {
         let state = true;
         const subscription = {
-          isActive: () => state,
+          active: () => state,
           dispose() {
             state = false;
           },
@@ -72,25 +73,39 @@ var Single = (function () {
               if (isFunction(next) && state) next(x);
             },
             error(x) {
-              if (isFunction(error) && state) {
-                error(x);
+              if (state) {
+                if (isFunction(error)) error(x);
                 state = false;
               } else {
                 throw x;
               }
             },
             complete() {
-              if (isFunction(complete) && state) {
-                complete();
+              if (state) {
+                if (isFunction(complete)) complete();
                 state = false;
               }
             },
+            subscription,
           });
-        } catch (e) {
-          error(e);
+        } catch (err) {
+          error(err);
           subscription.dispose();
         }
       });
+    }
+
+    /**
+     * Allow building operator pipelines for Observables.
+     * @param  {...function(x: Observable):Observable} curry
+     * @returns {Observable}
+     */
+    pipe(...curry) {
+      let result = this;
+      for (const c of curry) {
+        if (isFunction(c)) result = c(result);
+      }
+      return result;
     }
 
     /**
@@ -105,7 +120,7 @@ var Single = (function () {
     subscribe(next, error, complete) {
       let state = true;
       const subscription = {
-        isActive: () => state,
+        active: () => state,
         dispose() {
           state = false;
         },
@@ -113,7 +128,7 @@ var Single = (function () {
 
       this.sub({
         subscribe(ac) {
-          subscription.isActive = () => ac.isActive();
+          subscription.active = () => ac.active();
           subscription.dispose = ac.dispose;
         },
         next,
@@ -125,6 +140,6 @@ var Single = (function () {
     }
   }
 
-  return LiteObservable;
+  return Observable;
 
 }());
