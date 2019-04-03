@@ -2,9 +2,29 @@
   "name": "lite-observable",
   "version": "1.0.2",
   "description": "Lite Cold Observables for JS",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "linux-mocha": "./node_modules/.bin/mocha --require @babel/register -R spec --recursive",
+    "linux-test": "./node_modules/.bin/nyc --reporter=html npm run linux-mocha",
+    "linux-docs": "./node_modules/.bin/esdoc",
+    "linux-cjs": "./node_modules/.bin/rollup src/index.js --format cjs --name \"Single\" --file index.js",
+    "linux-browser": "./node_modules/.bin/rollup src/index.js --format iife --name \"Single\" --file dist/index.js",
+    "linux-minify": "npm run linux-browser && ./node_modules/.bin/terser dist/index.js --compress --mangle --output dist/index.min.js",
+    "linux-build": "npm run linux-cjs && npm run linux-minify && npm run linux-docs && npm run linux-test",
+    "win-mocha": "node node_modules/mocha/bin/mocha --require @babel/register -R spec --recursive",
+    "win-test": "node node_modules/nyc/bin/nyc.js --reporter=html npm run win-mocha",
+    "win-docs": "node node_modules/esdoc/out/src/ESDocCLI.js",
+    "win-cjs": "node node_modules/.bin/rollup src/index.js --format cjs --name \"Single\" --file index.js",
+    "win-browser": "node node_modules/.bin/rollup src/index.js --format iife --name \"Single\" --file dist/index.js",
+    "win-minify": "npm run win-browser && node node_modules/.bin/terser dist/index.js --compress --mangle --output dist/index.min.js",
+    "win-build": "npm run win-cjs && npm run win-minify && npm run win-docs && npm run win-test",
+    "mocha": "npm run linux-mocha || npm run win-mocha",
+    "test": "npm run linux-test || npm run win-test",
+    "docs": "npm run linux-docs || npm run win-docs",
+    "cjs": "npm run linux-cjs || npm run win-cjs",
+    "browser": "npm run linux-browser || npm run win-browser",
+    "minify": "npm run linux-minify || npm run win-minify",
+    "build": "npm run cjs && npm run minify && npm run docs && npm test"
   },
   "repository": {
     "type": "git",
@@ -20,5 +40,20 @@
   "bugs": {
     "url": "https://github.com/LXSMNSYC/LiteObservable/issues"
   },
-  "homepage": "https://github.com/LXSMNSYC/LiteObservable#readme"
+  "homepage": "https://github.com/LXSMNSYC/LiteObservable#readme",
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
+    "esdoc": "^1.1.0",
+    "esdoc-integrate-test-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "rollup": "^1.8.0",
+    "terser": "^3.17.0"
+  }
 }
