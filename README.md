@@ -43,17 +43,11 @@ Emitters have the following properties:
 ### Subscribing
 
 ```js
-observable.subscribe({
-  next(x) {
-    console.log(`Next: ${x}`);
-  },
-  error(e) {
-    console.log(`Error: ${e}`);
-  },
-  complete(e) {
-    console.log('Completed');
-  }
-});
+observable.subscribe(
+  x => console.log(`Next: ${x}`)
+  e => console.log(`Error: ${e}`),
+  () => console.log('Completed'),
+);
 ```
 
 Subscriptions have the following properties:
@@ -67,7 +61,7 @@ Subscriptions have the following properties:
 
 With the ```pipe``` method, it is easy to create and use your own custom operators.
 
-When constructing operators, it is recommended to use the constructor instead of ```create``` method to prevent subscription overhead, and to directly access the unabstracted Observer object.
+When constructing operators, it is recommended to use the constructor instead of ```create``` method to prevent subscription overhead, and to directly access the unabstracted Observer object. Use ```sub``` instead of ```subscribe``` to access the operator of the source Observable.
 
 Example below is a map and filter operators:
 
