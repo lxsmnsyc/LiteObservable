@@ -1,88 +1,127 @@
 # LiteObservable
-Cold Observables for JS in a lightweight(<1kb) fashion.
 
-## Why?
-Unlike the proposed Observable interface as written here:
-https://github.com/tc39/proposal-observable
-LiteObservable is implemented in more-or-less 60 lines, has a single class with two methods (constructor and subscribe) and the implementation is Promise-like: you use functions for both the Observer and the SubscriptionObserver, and the subscribe method returns a cleanup function rather than a class which does the same thing.
+Cold Observables for JS in just 617 bytes.
 
 ## Usage
-Creating an Observable
-```js
-  let observable = new LiteObservable((next, error, complete, closed) => {
-    // next: emits a value.
-    // error: emits an error.
-    // complete: completes the observable.
-    // closed: returns the state of the observable.
-    return () => {
-      // cleanup function
-    };
-  });
-```
 
-Subscribing
-```js
-  let cleanup = observable.subscribe(
-    next => console.log(next),
-    error => console.error(error),
-    () => console.log("completed")
-  );
-```
+### Installing
 
-## Installing
 As a node module
-```
+
+```bash
 npm i lite-observable
 ```
+
 Or in browser:
+
 ```html
-<!-- CDN -->
-<script src="https://cdn.jsdelivr.net/npm/lite-observable@1.0.2/dist/observable.min.js"></script>
-<!-- Node -->
-<script src"node_modules/lite-observable/dist/observable.min.js"></script>
+<!-- jsDelivr -->
+<script src="https://cdn.jsdelivr.net/npm/lite-observable/dist/index.min.js"></script>
+<!-- unpkg -->
+<script src="https://unpkg.com/lite-observable/dist/index.min.js"></script>
 ```
 
-## Example
+### Creating an Observable
+
 ```js
-var LiteObservable = require("lite-observable")
+const observable = Observable.create(emitter => {
+  emitter.next('Hello');
+  emitter.next('World');
+  emitter.complete();
+});
+```
 
-LiteObservable.from = iterable => {
-    if(iterable instanceof LiteObservable){
-        return new LiteObservable((next, error, complete, closed) => {
-            let cleanup;
+Emitters have the following properties:
 
-            cleanup = iterable.subscribe(
-                x => {
-                    if(closed()){
-                        cleanup();
-                    } else {
-                        next(x);
-                    }
-                },
-                error,
-                complete
-            );
+| Field | Type | Description |
+| --- | --- | --- |
+| next | ```function``` | Emits a value. |
+| error | ```function``` | Emits an error signal. |
+| complete | ```function``` | Emits a completion signal. |
+| subscription | ```object``` | The subscription context. |
 
-            return cleanup;
-        })
-    } else if(typeof iterable[Symbol.iterator] === 'function'){
-        return new LiteObservable((next, error, complete, closed) => {
-            for(let values of iterable){
-                next(values);
+### Subscribing
 
-                if(closed()) return;
-            }
-            complete();
-        });
-    }
-    return new LiteObservable((next, error, complete, closed) => {
-        complete();
-    });
-};
+```js
+observable.subscribe({
+  next(x) {
+    console.log(`Next: ${x}`);
+  },
+  error(e) {
+    console.log(`Error: ${e}`);
+  },
+  complete(e) {
+    console.log('Completed');
+  }
+});
+```
 
-LiteObservable.of = function(){
-    return LiteObservable.from([...arguments])
-};
+Subscriptions have the following properties:
 
-LiteObservable.of(1, 2, 3, 4, 5).subscribe(console.log);
+| Field | Type | Description |
+| --- | --- | --- |
+| active | ```function``` | Returns the current state of the subscription. Returns false if the subscription is disposed or finished. |
+| dispose | ```function``` | Disposes the subscription. |
+
+### Creating your own operators
+
+With the ```pipe``` method, it is easy to create and use your own custom operators.
+
+When constructing operators, it is recommended to use the constructor instead of ```create``` method to prevent subscription overhead, and to directly access the unabstracted Observer object.
+
+Example below is a map and filter operators:
+
+```js
+const map = mapper => source => new Observable((o) => {
+  const {
+    subscribe, complete, error, next,
+  } = o;
+  source.sub({
+    subscribe,
+    next: x => next(mapper(x)),
+    error,
+    complete,
+  });
+});
+
+const filter = predicate => source => new Observable((o) => {
+  const {
+    subscribe, complete, error, next,
+  } = o;
+  source.sub({
+    subscribe,
+    next: x => predicate(x) && next(x),
+    error,
+    complete,
+  });
+});
+```
+
+Example usage:
+
+```js
+const observable = Observable.create((e) => {
+  for (let i = 0; i < 10; i += 1) {
+    e.next(i);
+  }
+  e.complete();
+});
+
+observable.pipe(
+  filter(x => x % 2 === 0),
+  map(x => x * 2),
+  map(x => `Next: ${x}`),
+).subscribe(
+  console.log,
+);
+```
+
+which outputs:
+
+```
+Next: 0
+Next: 4
+Next: 8
+Next: 12
+Next: 16
 ```
