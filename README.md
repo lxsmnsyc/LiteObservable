@@ -12,13 +12,8 @@ As a node module
 npm i lite-observable
 ```
 
-Or in browser:
-
-```html
-<!-- jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/lite-observable/dist/index.min.js"></script>
-<!-- unpkg -->
-<script src="https://unpkg.com/lite-observable/dist/index.min.js"></script>
+```yarn
+yarn add lite-observable
 ```
 
 ### Creating an Observable

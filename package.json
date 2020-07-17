@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "2.0.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -32,5 +32,8 @@
     "tsdx": "^0.13.2",
     "tslib": "^2.0.0",
     "typescript": "^3.9.7"
-  }
+  },
+  "description": "Lightweight cold observable js library",
+  "repository": "https://github.com/LXSMNSYC/LiteObservable.git",
+  "private": false
 }
